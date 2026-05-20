@@ -19,7 +19,8 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.6"
+    "@openzeppelin/contracts": "^4.9.6",
+    "dotenv": "^17.4.2"
   },
   "type": "module",
   "name": "web3-learning",
