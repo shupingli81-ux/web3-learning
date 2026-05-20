@@ -7,6 +7,9 @@ import WalletConnect from './components/WalletConnect'
 import TokenInfo from './components/TokenInfo'
 import CreateProposal from './components/CreateProposal'
 import ProposalList from './components/ProposalList'
+import Profile from './components/Profile'
+import Dashboard from './components/Dashboard'
+import { ToastContainer } from './components/Toast'
 
 function App() {
   const [provider, setProvider] = useState(null)
@@ -16,6 +19,16 @@ function App() {
   const [tokenContract, setTokenContract] = useState(null)
   const [governanceContract, setGovernanceContract] = useState(null)
   const [activeTab, setActiveTab] = useState('proposals')
+  const [toasts, setToasts] = useState([])
+
+  const addToast = (message, type = 'info') => {
+    const id = Date.now()
+    setToasts(prev => [...prev, { id, message, type }])
+  }
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(t => t.id !== id))
+  }
 
   useEffect(() => {
     if (window.ethereum) {
@@ -104,7 +117,7 @@ function App() {
         ) : (
           <>
             <div className="mb-6 flex gap-4 border-b border-gray-700">
-              {['dashboard', 'proposals', 'create', 'token'].map(tab => (
+              {['dashboard', 'proposals', 'create', 'profile', 'token'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -114,7 +127,7 @@ function App() {
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  {tab === 'create' ? 'New Proposal' : tab}
+                  {tab === 'create' ? 'New Proposal' : tab === 'profile' ? '👤 Profile' : tab}
                 </button>
               ))}
             </div>
@@ -142,6 +155,13 @@ function App() {
                   account={account}
                 />
               )}
+              {activeTab === 'profile' && (
+                <Profile
+                  tokenContract={tokenContract}
+                  governanceContract={governanceContract}
+                  account={account}
+                />
+              )}
               {activeTab === 'token' && (
                 <TokenInfo 
                   tokenContract={tokenContract}
@@ -152,6 +172,7 @@ function App() {
           </>
         )}
       </main>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   )
 }
